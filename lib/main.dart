@@ -42,6 +42,11 @@ void main() async {
   );
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  bool hasLaunched = await SharedPrefHelper.hasLaunchedBefore();
+  if (!hasLaunched) {
+    await SharedPrefHelper.clearLoginState();
+    await SharedPrefHelper.setHasLaunched();
+  }
 
   // Check login state
   bool isLoggedIn = await SharedPrefHelper.isLoggedIn();

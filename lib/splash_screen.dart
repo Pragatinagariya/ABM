@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'package:ABM2/dashboard.dart';
-
-import 'main.dart';
+import 'package:ABM2/main.dart';
 import 'package:flutter/material.dart';
+import 'dashboard.dart';
 import 'dashboard_Admin.dart';
-// import 'package:abm_agency/login_page.dart';  // import your login page
-import 'shared_pref_helper.dart'; // your shared prefs helper
+import 'shared_pref_helper.dart';
 import 'globals.dart' as globals;
+ // Make sure this import points to your actual login page
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,15 +15,16 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  List<Map<String, dynamic>> orders = [];
+
   @override
   void initState() {
     super.initState();
     _loadDataAndNavigate();
   }
 
-  List<Map<String, dynamic>> orders = [];
   Future<void> _loadDataAndNavigate() async {
-    // Fetch all shared preferences asynchronously
+    // Fetch login state and saved details
     bool isLoggedIn = await SharedPrefHelper.isLoggedIn();
     String? username = await SharedPrefHelper.getUsername();
     String? usertype = await SharedPrefHelper.getUsertype();
@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
     String? clientcode = await SharedPrefHelper.getClientCode();
     String? cmpcode = await SharedPrefHelper.getCmpCode();
 
-    // Set global vars if needed
+    // Store in globals
     globals.username = username ?? '';
     globals.userid = userid ?? '';
     globals.usertype = usertype ?? '';
@@ -41,41 +41,37 @@ class _SplashScreenState extends State<SplashScreen> {
     globals.clientcode = clientcode ?? '';
     globals.cmpcode = cmpcode ?? '';
 
-    // Wait for 3 seconds to show splash screen
-    await Future.delayed(const Duration(seconds: 10));
+    // Show splash screen for a short time
+    await Future.delayed(const Duration(seconds: 3));
 
-    // Navigate to the correct page
-    if (!mounted) return; // Check widget is still mounted before navigating
+    if (!mounted) return;
 
-    Navigator.pushReplacement(
+    // Navigate based on login state
+    if (isLoggedIn && userid != null && userid.isNotEmpty) {
+      // Logged in → go to dashboard
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => globals.usertype == 'admin'
               ? HomeScreenAdmin(
                   username: globals.username,
-                  clientid: '',
+                  clientid: globals.clientid,
                 )
               : HomeScreen(
                   username: globals.username,
                   clientid: globals.clientid,
-                  orders: orders),
-        ));
+                  orders: orders,
+                ),
+        ),
+      );
+    } else {
+      // Not logged in → go to login page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    }
   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       body: Center(
-//         child: Image.asset(
-//           'assets/images/icons/app_icon.png',
-//           width: 150,
-//           height: 150,
-//         ),
-//       ),
-//     );
-//   }
-// }
 
   @override
   Widget build(BuildContext context) {
@@ -86,14 +82,12 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              // 'assets/images/icons/amisys.png',
               'assets/images/icons/Pragati.png',
               width: 150,
               height: 150,
             ),
-            const SizedBox(height: 20), // spacing between images
+            const SizedBox(height: 20),
             Image.asset(
-              // 'assets/images/icons/Pragati.png', // replace with your actual image path
               'assets/images/icons/amisys.png',
               width: 150,
               height: 150,

@@ -11,10 +11,25 @@ class SharedPrefHelper {
   static const String _useridKey = 'userid';
 
   static var instance; // Re-added User ID key
+  static Future<bool> hasLaunchedBefore() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('hasLaunchedBefore') ?? false;
+  }
+
+  static Future<void> setHasLaunched() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hasLaunchedBefore', true);
+  }
 
   // Save login state, username, user type, client ID, and user ID
   static Future<void> saveLoginState(
-      String username, String usertype, String clientid, String clientcode, String cmpcode, String userid, bool isLoggedIn) async {
+      String username,
+      String usertype,
+      String clientid,
+      String clientcode,
+      String cmpcode,
+      String userid,
+      bool isLoggedIn) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_isLoggedInKey, isLoggedIn);
     await prefs.setString(_usernameKey, username);

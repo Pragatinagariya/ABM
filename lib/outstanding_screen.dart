@@ -68,172 +68,176 @@ class OutstandingScreenState extends State<OutstandingScreen> {
   }
 
   Future<File> _createPDF() async {
-  final pdf = pw.Document();
-  const int itemsPerPage = 20; // Number of items per page
-  final totalPages = (userData.length / itemsPerPage).ceil(); // Total pages
-  final totalBillAmount = userData.fold<double>(
-    0.0,
-    (sum, item) => sum + (double.tryParse(item["d_billamt"] ?? '0') ?? 0.0),
-  ); // Calculate total bill amount
+    final pdf = pw.Document();
+    const int itemsPerPage = 20; // Number of items per page
+    final totalPages = (userData.length / itemsPerPage).ceil(); // Total pages
+    final totalBillAmount = userData.fold<double>(
+      0.0,
+      (sum, item) => sum + (double.tryParse(item["d_billamt"] ?? '0') ?? 0.0),
+    ); // Calculate total bill amount
 
-  // Iterate through the pages and generate each page
-  for (int pageNum = 0; pageNum < totalPages; pageNum++) {
-    final startIndex = pageNum * itemsPerPage;
-    final endIndex = startIndex + itemsPerPage;
-    final pageData = userData.sublist(
-      startIndex,
-      endIndex > userData.length ? userData.length : endIndex,
-    );
+    // Iterate through the pages and generate each page
+    for (int pageNum = 0; pageNum < totalPages; pageNum++) {
+      final startIndex = pageNum * itemsPerPage;
+      final endIndex = startIndex + itemsPerPage;
+      final pageData = userData.sublist(
+        startIndex,
+        endIndex > userData.length ? userData.length : endIndex,
+      );
 
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-         return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.center,
-            children: [
-              pw.Text(widget.clientMap,
-                  style: const pw.TextStyle(fontSize: 24)),
-              pw.SizedBox(height: 5),
-              pw.Text('Outstanding Customer Summary',
-                  style: const pw.TextStyle(fontSize: 16)),
-              pw.SizedBox(height: 10),
-              pw.Text(
-                'As on ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
-                style: pw.TextStyle(
-                    fontSize: 14,
-                    fontWeight: pw.FontWeight.bold), // Corrected this line
-                textAlign: pw.TextAlign.right,
-              ),
-
-              pw.SizedBox(height: 10),
-              pw.Divider(),
-              pw.Table(
-                columnWidths: {
-                  0: const pw.FlexColumnWidth(0.5),
-                  1: const pw.FlexColumnWidth(2),
-                  2: const pw.FlexColumnWidth(2),
-                  3: const pw.FlexColumnWidth(2),
-                },
-                children: [
-                  pw.TableRow(
-                    children: [
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(4),
-                        child: pw.Text('No',
-                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(4),
-                        child: pw.Text('Customer',
-                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(4),
-                        child: pw.Text('Agent',
-                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(4),
-                        child: pw.Text('City',
-                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      ),
-                      pw.Padding(
-                        padding: const pw.EdgeInsets.all(4),
-                        child: pw.Text('Bill Amt',
-                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                      ),
-                    ],
-                  ),
-                  pw.TableRow(
-                    children: [
-                      pw.Divider(thickness: 1),
-                      pw.Divider(thickness: 1),
-                      pw.Divider(thickness: 1),
-                      pw.Divider(thickness: 1),
-                      pw.Divider(thickness: 1),
-                    ],
-                  ),
-                  // Loop through the pageData to generate table rows dynamically
-                  for (int i = 0; i < pageData.length; i++)
+      pdf.addPage(
+        pw.Page(
+          build: (pw.Context context) {
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.center,
+              children: [
+                pw.Text(widget.clientMap,
+                    style: const pw.TextStyle(fontSize: 24)),
+                pw.SizedBox(height: 5),
+                pw.Text('Outstanding Customer Summary',
+                    style: const pw.TextStyle(fontSize: 16)),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  'As on ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
+                  style: pw.TextStyle(
+                      fontSize: 14,
+                      fontWeight: pw.FontWeight.bold), // Corrected this line
+                  textAlign: pw.TextAlign.right,
+                ),
+                pw.SizedBox(height: 10),
+                pw.Divider(),
+                pw.Table(
+                  columnWidths: {
+                    0: const pw.FlexColumnWidth(0.5),
+                    1: const pw.FlexColumnWidth(2),
+                    2: const pw.FlexColumnWidth(2),
+                    3: const pw.FlexColumnWidth(2),
+                  },
+                  children: [
                     pw.TableRow(
                       children: [
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(4),
-                          child: pw.Text('${startIndex + i + 1}'),
+                          child: pw.Text('No',
+                              style:
+                                  pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(4),
-                          child: pw.Text(
-                            '${pageData[i]["d_accname"] ?? "No name"}',
-                            style: const pw.TextStyle(fontSize: 9),
-                            maxLines: 2,
-                            overflow: pw.TextOverflow.clip,
-                          ),
+                          child: pw.Text('Customer',
+                              style:
+                                  pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(4),
-                          child: pw.Text(
-                            '${pageData[i]["d_agentname"] ?? "No name"}',
-                            style: const pw.TextStyle(fontSize: 9),
-                            maxLines: 2,
-                            overflow: pw.TextOverflow.clip,
-                          ),
+                          child: pw.Text('Agent',
+                              style:
+                                  pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                         ),
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(4),
-                          child: pw.Text(
-                            '${pageData[i]["d_acccity"] ?? "No name"}',
-                            style: const pw.TextStyle(fontSize: 9),
-                          ),
+                          child: pw.Text('City',
+                              style:
+                                  pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                         ),
                         pw.Padding(
-                          padding: const pw.EdgeInsets.all(3),
-                          child: pw.Text(
-                            '${pageData[i]["d_billamt"] ?? "0.0"}',
-                            style: const pw.TextStyle(fontSize: 9),
-                            textAlign: pw.TextAlign.right,
-                          ),
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text('Bill Amt',
+                              style:
+                                  pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                         ),
                       ],
                     ),
-                ],
-              ),
-            pw.SizedBox(height: 10),
-if (pageNum == totalPages - 1) // Add total only on the last page
-  pw.Column(
-    children: [
-      pw.Divider(), // Divider above the total
-      pw.Row(
-        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-        children: [
-          pw.Spacer(), // Add space to push the text to the right
-          pw.Text(
-            'Total Bill Amount: ${totalBillAmount.toStringAsFixed(2)}',
-            style: pw.TextStyle(
-              fontSize: 14,
-              fontWeight: pw.FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-      pw.Divider(), // Divider below the total
-    ],
-  ),
-pw.SizedBox(height: 10),
+                    pw.TableRow(
+                      children: [
+                        pw.Divider(thickness: 1),
+                        pw.Divider(thickness: 1),
+                        pw.Divider(thickness: 1),
+                        pw.Divider(thickness: 1),
+                        pw.Divider(thickness: 1),
+                      ],
+                    ),
+                    // Loop through the pageData to generate table rows dynamically
+                    for (int i = 0; i < pageData.length; i++)
+                      pw.TableRow(
+                        children: [
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(4),
+                            child: pw.Text('${startIndex + i + 1}'),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(4),
+                            child: pw.Text(
+                              '${pageData[i]["d_accname"] ?? "No name"}',
+                              style: const pw.TextStyle(fontSize: 9),
+                              maxLines: 2,
+                              overflow: pw.TextOverflow.clip,
+                            ),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(4),
+                            child: pw.Text(
+                              '${pageData[i]["d_agentname"] ?? "No name"}',
+                              style: const pw.TextStyle(fontSize: 9),
+                              maxLines: 2,
+                              overflow: pw.TextOverflow.clip,
+                            ),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(4),
+                            child: pw.Text(
+                              '${pageData[i]["d_acccity"] ?? "No name"}',
+                              style: const pw.TextStyle(fontSize: 9),
+                            ),
+                          ),
+                          pw.Padding(
+                            padding: const pw.EdgeInsets.all(3),
+                            child: pw.Text(
+                              '${pageData[i]["d_billamt"] ?? "0.0"}',
+                              style: const pw.TextStyle(fontSize: 9),
+                              textAlign: pw.TextAlign.right,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+                pw.SizedBox(height: 10),
+                if (pageNum ==
+                    totalPages - 1) // Add total only on the last page
+                  pw.Column(
+                    children: [
+                      pw.Divider(), // Divider above the total
+                      pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          pw.Spacer(), // Add space to push the text to the right
+                          pw.Text(
+                            'Total Bill Amount: ${totalBillAmount.toStringAsFixed(2)}',
+                            style: pw.TextStyle(
+                              fontSize: 14,
+                              fontWeight: pw.FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      pw.Divider(), // Divider below the total
+                    ],
+                  ),
+                pw.SizedBox(height: 10),
+              ],
+            );
+          },
+        ),
+      );
+    }
 
-            ],
-          );
-        },
-      ),
-    );
+    // Saving the PDF
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/outstanding_customer_summary.pdf');
+    await file.writeAsBytes(await pdf.save());
+    return file;
   }
-
-  // Saving the PDF
-  final directory = await getApplicationDocumentsDirectory();
-  final file = File('${directory.path}/outstanding_customer_summary.pdf');
-  await file.writeAsBytes(await pdf.save());
-  return file;
-}
 
   // Function to share the PDF
   Future<void> _sharePDF() async {
