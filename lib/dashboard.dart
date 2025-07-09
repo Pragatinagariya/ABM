@@ -334,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           username: widget.username,
                           clientcode: clientMap[
                               dropdownValue]!, // Fetch client code from map
-                              cmpcode: globals.cmpcode,
+                          cmpcode: globals.cmpcode,
                           clientname: dropdownValue.isNotEmpty
                               ? dropdownValue
                               : 'Unknown',
@@ -1667,43 +1667,43 @@ class _HomeScreenState extends State<HomeScreen> {
             //           ),
             //         ),
             //       ),
-            //       InkWell(
-            //         onTap: () {
-            //           Navigator.push(
-            //             context,
-            //             MaterialPageRoute(
-            //               builder: (context) => HisabList(
-            //                   // username: widget.username,
-            //                   // clientcode: clientMap[
-            //                   //     dropdownValue]!, // Fetch client code from map
-            //                   // clientname: dropdownValue.isNotEmpty
-            //                   //     ? dropdownValue
-            //                   //     : 'Unknown',
-            //                   // clientMap: dropdownValue,
-            //                   ),
-            //             ),
-            //           );
-            //         },
-            //         child: Container(
-            //           color: Colors.white,
-            //           child: const Center(
-            //             child: Column(
-            //               mainAxisAlignment: MainAxisAlignment.center,
-            //               children: [
-            //                 Image(
-            //                   image: AssetImage(
-            //                       'assets/images/icons/approved_request.png'),
-            //                   height: 35,
-            //                   width: 40,
-            //                 ),
-            //                 SizedBox(height: 5),
-            //                 Text("Hisab"),
-            //                 Text("master"),
-            //               ],
-            //             ),
-            //           ),
-            //         ),
-            //       ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HisabList(
+                        // username: widget.username,
+                        // clientcode: clientMap[
+                        //     dropdownValue]!, // Fetch client code from map
+                        // clientname: dropdownValue.isNotEmpty
+                        //     ? dropdownValue
+                        //     : 'Unknown',
+                        // clientMap: dropdownValue,
+                        ),
+                  ),
+                );
+              },
+              child: Container(
+                color: Colors.white,
+                child: const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image(
+                        image: AssetImage(
+                            'assets/images/icons/approved_request.png'),
+                        height: 35,
+                        width: 40,
+                      ),
+                      SizedBox(height: 5),
+                      Text("Hisab"),
+                      Text("master"),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             //     ],
             //   ),
             // ),
